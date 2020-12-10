@@ -7,7 +7,7 @@ export default function Home() {
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div>Yay</div>
+      <a href="http://localhost:4000/auth/google">Singin with google</a>
     </div>
   );
 }

@@ -1,6 +1,5 @@
 const Mutation = {
-  logout: (parent, args, context) => context.logout(),
+  logout: (parent, args, ctx) => ctx.req.logout(),
 };
-export default Mutation;
 
-// module.exports = Mutation;
+export default Mutation;

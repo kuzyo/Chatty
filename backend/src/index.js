@@ -19,9 +19,10 @@ const mount = async () => {
       Query,
       Mutation,
     },
-    context: ({ req }) => ({
-      getUser: () => req.user,
-      logout: () => req.logout(),
+    context: ({ req, res }) => ({
+      req,
+      res,
+      database,
     }),
     playground: { settings: { "request.credentials": "same-origin" } },
   });

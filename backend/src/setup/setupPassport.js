@@ -1,7 +1,6 @@
 import passport from "passport";
-import session from "express-session";
 import GoogleStrategy from "passport-google-oauth20";
-import { v4 as uuid } from "uuid";
+import session from "cookie-session";
 import { ObjectID } from "mongodb";
 
 const setupPassport = (app, database) => {
@@ -47,10 +46,8 @@ const setupPassport = (app, database) => {
 
   app.use(
     session({
-      genid: (req) => uuid(),
-      secret: process.env.SESSION_SECRECT,
-      resave: false,
-      saveUninitialized: false,
+      name: process.env.SESSION_NAME,
+      keys: ["key1", "key2"],
     })
   );
 

@@ -1,9 +1,7 @@
 import Mutation from "./Mutation";
 
 const Query = {
-  currentUser: (parent, args, context) => context.getUser(),
+  currentUser: (parent, args, ctx) => ctx.req.user,
 };
 
 export default Query;
-
-// module.exports = Query;
