@@ -10,6 +10,7 @@ const setupRoutes = (server) => {
     "/auth/google/callback",
     passport.authenticate("google", { failureRedirect: "/" }),
     function (req, res) {
+      console.log("User in request", req.user);
       res.redirect("/");
     }
   );

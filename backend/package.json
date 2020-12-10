@@ -4,26 +4,20 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon -e js,graphql -x node src/index.js",
-    "dev": "nodemon -e js,graphql -x node --inspect src/index.js"
+    "start": "nodemon -e js,graphql -x node -r esm src/index.js",
+    "dev": "nodemon -e js,graphql -x node -r esm --inspect src/index.js"
   },
   "dependencies": {
-    "babel-preset-env": "^1.7.0",
-    "body-parser": "^1.19.0",
-    "cookie-parser": "^1.4.5",
+    "apollo-server-express": "^2.19.0",
     "cookie-session": "^1.4.0",
     "dotenv": "^8.2.0",
+    "esm": "^3.2.25",
+    "express": "^4.17.1",
     "express-session": "^1.17.1",
-    "graphql-yoga": "^1.18.3",
     "mongodb": "^3.6.3",
     "nodemon": "^2.0.6",
     "passport": "^0.4.1",
-    "passport-google-oauth": "^2.0.0",
-    "passport-google-oauth20": "^2.0.0"
-  },
-  "babel": {
-    "presets": [
-      "env"
-    ]
+    "passport-google-oauth20": "^2.0.0",
+    "uuid": "^8.3.2"
   }
 }
