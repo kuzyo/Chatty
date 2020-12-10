@@ -1,4 +1,4 @@
-const { MongoClient } = require("mongodb");
+import { MongoClient } from "mongodb";
 
 const setupDatabase = async () => {
   const client = await MongoClient.connect(process.env.DB_CONNECTION_URL, {
@@ -13,4 +13,4 @@ const setupDatabase = async () => {
   };
 };
 
-module.exports = setupDatabase;
+export default setupDatabase;

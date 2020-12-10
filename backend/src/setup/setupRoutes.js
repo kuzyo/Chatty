@@ -1,19 +1,7 @@
-const passport = require("passport");
+import authRouter from "./routes/auth";
 
-const setupRoutes = (server) => {
-  server.express.get(
-    "/auth/google",
-    passport.authenticate("google", { scope: ["email", "profile"] })
-  );
-
-  server.express.get(
-    "/auth/google/callback",
-    passport.authenticate("google", { failureRedirect: "/" }),
-    function (req, res) {
-      console.log("User in request", req.user);
-      res.redirect("/");
-    }
-  );
+const setupRoutes = (app) => {
+  app.use("/auth", authRouter);
 };
 
-module.exports = setupRoutes;
+export default setupRoutes;
