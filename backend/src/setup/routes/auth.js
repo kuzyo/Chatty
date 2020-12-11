@@ -10,8 +10,8 @@ authRouter.get(
 authRouter.get(
   "/google/callback",
   passport.authenticate("google", {
-    successRedirect: "http://localhost:4000/graphql",
-    failureRedirect: "http://localhost:4000/graphql",
+    successRedirect: "http://localhost:3000",
+    failureRedirect: "http://localhost:3000",
   })
 );
 

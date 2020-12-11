@@ -27,7 +27,13 @@ const mount = async () => {
     playground: { settings: { "request.credentials": "same-origin" } },
   });
 
-  server.applyMiddleware({ app });
+  server.applyMiddleware({
+    app,
+    cors: {
+      origin: process.env.FRONTEND_URL,
+      credentials: true,
+    },
+  });
 
   app.listen({ port: process.env.PORT }, () => {
     console.log(`🚀 Server ready at http://localhost:${process.env.PORT}`);
