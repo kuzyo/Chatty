@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { useMemo } from "react";
 import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
-import { BACKEND_URL } from "./config"
+import { BACKEND_URL } from "./config";
 
 let apolloClient: any;
 
@@ -9,7 +10,7 @@ function createApolloClient() {
     ssrMode: typeof window === "undefined",
     link: new HttpLink({
       uri: BACKEND_URL,
-      credentials: 'include'
+      credentials: "include",
     }),
     cache: new InMemoryCache(),
   });
@@ -34,7 +35,7 @@ export function initializeApollo(initialState = null) {
   return _apolloClient;
 }
 
-export function useApollo(initialState:any) {
+export function useApollo(initialState: any) {
   const store = useMemo(() => initializeApollo(initialState), [initialState]);
   return store;
 }

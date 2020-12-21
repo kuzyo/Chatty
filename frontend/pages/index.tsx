@@ -1,27 +1,13 @@
-import Head from "next/head";
-import {useUserQuery, User} from "../src/generated/graphql"
+import React from "react";
+import { useUser } from "../src/providers/user";
+import Layout from "../src/components/Layout";
+import LoginScreen from "../src/components/screens/LoginScreen";
+import ChatScreen from "../src/components/screens/ChatScreen";
 
-// const GET_CURRENT_USER = gql`
-//   query getCurrentUser {
-//     currentUser {
-//       _id
-//       name
-//       image
-//     }
-//   }
-// `;
+const Home: React.FC = () => {
+  const { user } = useUser();
 
-export default function Home() {
-  const { loading, error, data } = useUserQuery();
-    console.log(data.currentUser.image)
+  return <Layout>{user ? <ChatScreen /> : <LoginScreen />}</Layout>;
+};
 
-  return (
-    <div>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <a href="http://localhost:4000/auth/google">Singin with google</a>
-    </div>
-  );
-}
+export default Home;

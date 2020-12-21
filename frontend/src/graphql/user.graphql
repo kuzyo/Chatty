@@ -1,8 +1,0 @@
-query User {
-  currentUser {
-    _id
-    name
-    googleId
-    image
-  }
-}
