@@ -1,10 +1,13 @@
 import Mutation from "./Mutation";
+import { ObjectID } from "mongodb";
 
 const Query = {
   currentUser: (parent, args, ctx) => ctx.req.user,
   getUsers: (parent, args, ctx) => {
-    const users = ctx.database.users.find({}).toArray();
-    return users;
+    return ctx.database.users.find({}).toArray();
+  },
+  getMessages: (parent, args, ctx) => {
+    return ctx.database.messages.find({}).toArray();
   },
 };
 

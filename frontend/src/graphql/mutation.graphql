@@ -1,3 +1,10 @@
 mutation Logout {
   logout
 }
+
+mutation CreateMessage($to: ID!, $message: String!) {
+  createMessage(to: $to, message: $message) {
+    _id
+    message
+  }
+}

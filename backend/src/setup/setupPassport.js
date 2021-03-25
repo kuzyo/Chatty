@@ -23,7 +23,8 @@ const setupPassport = (app, database) => {
     const newUser = {
       googleId: profile.id,
       name: profile.displayName,
-      image: (profile.photos && profile.photos[0].value) || "",
+      email: profile.emails && profile.emails[0].value,
+      image: profile.photos && profile.photos[0].value,
     };
 
     const user = await database.users.insertOne(newUser);

@@ -4,6 +4,7 @@ import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import Profile from "../Profile";
 import Users from "../Users";
+import Chat from "../Chat";
 
 const ChatScreen: React.FC = () => {
   return (
@@ -15,7 +16,9 @@ const ChatScreen: React.FC = () => {
         </Box>
       </Grid>
       <Grid item xs={8}>
-        <Paper style={{ height: "100%" }}>xs=12</Paper>
+        <Paper style={{ height: "100%" }}>
+          <Chat />
+        </Paper>
       </Grid>
     </Grid>
   );

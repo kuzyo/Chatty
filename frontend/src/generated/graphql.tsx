@@ -11,27 +11,52 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Date: any;
   /** The `Upload` scalar type represents a file upload. */
   Upload: any;
 };
+
 
 export type User = {
   __typename?: 'User';
   _id: Scalars['ID'];
   name: Scalars['String'];
+  email: Scalars['String'];
   googleId: Scalars['String'];
-  image?: Maybe<Scalars['String']>;
+  image: Scalars['String'];
+};
+
+export type Message = {
+  __typename?: 'Message';
+  _id: Scalars['ID'];
+  from: Scalars['ID'];
+  to: Scalars['ID'];
+  message: Scalars['String'];
+  createdAt: Scalars['Date'];
 };
 
 export type Query = {
   __typename?: 'Query';
   currentUser?: Maybe<User>;
   getUsers: Array<Maybe<User>>;
+  getMessages: Array<Maybe<Message>>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   logout?: Maybe<Scalars['Boolean']>;
+  createMessage?: Maybe<Message>;
+};
+
+
+export type MutationCreateMessageArgs = {
+  to: Scalars['ID'];
+  message: Scalars['String'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  messageSent?: Maybe<Message>;
 };
 
 export enum CacheControlScope {
@@ -48,6 +73,20 @@ export type LogoutMutation = (
   & Pick<Mutation, 'logout'>
 );
 
+export type CreateMessageMutationVariables = Exact<{
+  to: Scalars['ID'];
+  message: Scalars['String'];
+}>;
+
+
+export type CreateMessageMutation = (
+  { __typename?: 'Mutation' }
+  & { createMessage?: Maybe<(
+    { __typename?: 'Message' }
+    & Pick<Message, '_id' | 'message'>
+  )> }
+);
+
 export type UserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -55,7 +94,7 @@ export type UserQuery = (
   { __typename?: 'Query' }
   & { currentUser?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, '_id' | 'name' | 'googleId' | 'image'>
+    & Pick<User, '_id' | 'name' | 'googleId' | 'email' | 'image'>
   )> }
 );
 
@@ -100,12 +139,47 @@ export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<Logou
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const CreateMessageDocument = gql`
+    mutation CreateMessage($to: ID!, $message: String!) {
+  createMessage(to: $to, message: $message) {
+    _id
+    message
+  }
+}
+    `;
+export type CreateMessageMutationFn = Apollo.MutationFunction<CreateMessageMutation, CreateMessageMutationVariables>;
+
+/**
+ * __useCreateMessageMutation__
+ *
+ * To run a mutation, you first call `useCreateMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMessageMutation, { data, loading, error }] = useCreateMessageMutation({
+ *   variables: {
+ *      to: // value for 'to'
+ *      message: // value for 'message'
+ *   },
+ * });
+ */
+export function useCreateMessageMutation(baseOptions?: Apollo.MutationHookOptions<CreateMessageMutation, CreateMessageMutationVariables>) {
+        return Apollo.useMutation<CreateMessageMutation, CreateMessageMutationVariables>(CreateMessageDocument, baseOptions);
+      }
+export type CreateMessageMutationHookResult = ReturnType<typeof useCreateMessageMutation>;
+export type CreateMessageMutationResult = Apollo.MutationResult<CreateMessageMutation>;
+export type CreateMessageMutationOptions = Apollo.BaseMutationOptions<CreateMessageMutation, CreateMessageMutationVariables>;
 export const UserDocument = gql`
     query User {
   currentUser {
     _id
     name
     googleId
+    email
     image
   }
 }

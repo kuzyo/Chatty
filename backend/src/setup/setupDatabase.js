@@ -11,6 +11,7 @@ const setupDatabase = async () => {
 
     return {
       users: db.collection("users"),
+      messages: db.collection("messages"),
     };
   } catch (error) {
     throw new Error(`👽 Error connecting to database: ${error}`);

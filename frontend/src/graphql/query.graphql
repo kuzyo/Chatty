@@ -3,6 +3,7 @@ query User {
     _id
     name
     googleId
+    email,
     image
   }
 }
