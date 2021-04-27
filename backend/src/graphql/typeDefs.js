@@ -15,7 +15,7 @@ const typeDefs = gql`
     _id: ID!
     from: ID!
     to: ID!
-    message: String!
+    body: String!
     createdAt: Date!
   }
 
@@ -27,7 +27,7 @@ const typeDefs = gql`
 
   type Mutation {
     logout: Boolean
-    createMessage(to: ID!, message: String!): Message
+    createMessage(to: ID!, body: String!): Message
   }
 
   type Subscription {

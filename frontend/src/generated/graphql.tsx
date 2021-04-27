@@ -31,7 +31,7 @@ export type Message = {
   _id: Scalars['ID'];
   from: Scalars['ID'];
   to: Scalars['ID'];
-  message: Scalars['String'];
+  body: Scalars['String'];
   createdAt: Scalars['Date'];
 };
 
@@ -51,7 +51,7 @@ export type Mutation = {
 
 export type MutationCreateMessageArgs = {
   to: Scalars['ID'];
-  message: Scalars['String'];
+  body: Scalars['String'];
 };
 
 export type Subscription = {
@@ -75,7 +75,7 @@ export type LogoutMutation = (
 
 export type CreateMessageMutationVariables = Exact<{
   to: Scalars['ID'];
-  message: Scalars['String'];
+  body: Scalars['String'];
 }>;
 
 
@@ -83,7 +83,7 @@ export type CreateMessageMutation = (
   { __typename?: 'Mutation' }
   & { createMessage?: Maybe<(
     { __typename?: 'Message' }
-    & Pick<Message, '_id' | 'message'>
+    & Pick<Message, '_id' | 'body'>
   )> }
 );
 
@@ -106,6 +106,17 @@ export type GetUsersQuery = (
   & { getUsers: Array<Maybe<(
     { __typename?: 'User' }
     & Pick<User, '_id' | 'name' | 'googleId' | 'image'>
+  )>> }
+);
+
+export type GetMessagesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMessagesQuery = (
+  { __typename?: 'Query' }
+  & { getMessages: Array<Maybe<(
+    { __typename?: 'Message' }
+    & Pick<Message, '_id' | 'from' | 'to' | 'createdAt' | 'body'>
   )>> }
 );
 
@@ -140,10 +151,10 @@ export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
 export const CreateMessageDocument = gql`
-    mutation CreateMessage($to: ID!, $message: String!) {
-  createMessage(to: $to, message: $message) {
+    mutation CreateMessage($to: ID!, $body: String!) {
+  createMessage(to: $to, body: $body) {
     _id
-    message
+    body
   }
 }
     `;
@@ -163,7 +174,7 @@ export type CreateMessageMutationFn = Apollo.MutationFunction<CreateMessageMutat
  * const [createMessageMutation, { data, loading, error }] = useCreateMessageMutation({
  *   variables: {
  *      to: // value for 'to'
- *      message: // value for 'message'
+ *      body: // value for 'body'
  *   },
  * });
  */
@@ -244,3 +255,39 @@ export function useGetUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<G
 export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
 export type GetUsersLazyQueryHookResult = ReturnType<typeof useGetUsersLazyQuery>;
 export type GetUsersQueryResult = Apollo.QueryResult<GetUsersQuery, GetUsersQueryVariables>;
+export const GetMessagesDocument = gql`
+    query getMessages {
+  getMessages {
+    _id
+    from
+    to
+    createdAt
+    body
+  }
+}
+    `;
+
+/**
+ * __useGetMessagesQuery__
+ *
+ * To run a query within a React component, call `useGetMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMessagesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetMessagesQuery(baseOptions?: Apollo.QueryHookOptions<GetMessagesQuery, GetMessagesQueryVariables>) {
+        return Apollo.useQuery<GetMessagesQuery, GetMessagesQueryVariables>(GetMessagesDocument, baseOptions);
+      }
+export function useGetMessagesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMessagesQuery, GetMessagesQueryVariables>) {
+          return Apollo.useLazyQuery<GetMessagesQuery, GetMessagesQueryVariables>(GetMessagesDocument, baseOptions);
+        }
+export type GetMessagesQueryHookResult = ReturnType<typeof useGetMessagesQuery>;
+export type GetMessagesLazyQueryHookResult = ReturnType<typeof useGetMessagesLazyQuery>;
+export type GetMessagesQueryResult = Apollo.QueryResult<GetMessagesQuery, GetMessagesQueryVariables>;

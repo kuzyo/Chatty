@@ -5,6 +5,7 @@ const Mutation = {
       const { ops } = await ctx.database.messages.insertOne({
         ...args,
         createdAt: Date.now(),
+        from: ctx.req.user.googleId,
       });
       const [message] = ops;
       return message;

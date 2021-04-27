@@ -6,42 +6,46 @@ import { useCreateMessageMutation } from "../generated/graphql";
 
 const ChatField: React.FC = () => {
   const [message, setMessage] = useState("");
-  const [createMessageMutation, { data, loading }] = useCreateMessageMutation({
+  const [createMessageMutation, { loading }] = useCreateMessageMutation({
     variables: {
       to: "123",
-      message,
+      body: message,
     },
   });
-  console.log({ data });
 
-  const handleSent = async () => {
+  const handleSent = async (event: React.SyntheticEvent) => {
+    event.preventDefault();
     await createMessageMutation();
     setMessage("");
   };
 
+  const isDisabled = !Boolean(message.length) || loading;
+
   return (
-    <Box display="flex" alignItems="center">
-      <Box flex="1">
-        <TextField
-          fullWidth
-          value={message}
-          variant="outlined"
-          color="primary"
-          placeholder="Type your message..."
-          onChange={(e) => setMessage(e.target.value)}
-        />
+    <form onSubmit={handleSent}>
+      <Box display="flex" alignItems="center">
+        <Box flex="1">
+          <TextField
+            fullWidth
+            value={message}
+            variant="outlined"
+            color="primary"
+            placeholder="Type your message..."
+            onChange={(e) => setMessage(e.target.value)}
+          />
+        </Box>
+        <Box pl={2}>
+          <Button
+            type="submit"
+            color="primary"
+            variant="contained"
+            disabled={isDisabled}
+          >
+            Sent
+          </Button>
+        </Box>
       </Box>
-      <Box pl={2}>
-        <Button
-          color="primary"
-          variant="contained"
-          disabled={loading}
-          onClick={handleSent}
-        >
-          Sent
-        </Button>
-      </Box>
-    </Box>
+    </form>
   );
 };
 

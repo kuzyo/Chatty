@@ -3,7 +3,7 @@ query User {
     _id
     name
     googleId
-    email,
+    email
     image
   }
 }
@@ -14,5 +14,15 @@ query getUsers {
     name
     googleId
     image
+  }
+}
+
+query getMessages {
+  getMessages {
+    _id
+    from
+    to
+    createdAt
+    body
   }
 }
