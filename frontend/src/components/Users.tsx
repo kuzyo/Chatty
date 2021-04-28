@@ -1,4 +1,6 @@
 import React from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
 import Card from "@material-ui/core/Card";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
@@ -12,10 +14,13 @@ import { useGetUsersQuery } from "../generated/graphql";
 import { Loading } from "./Loading";
 
 const Users: React.FC = () => {
+  const router = useRouter();
   const { data, loading } = useGetUsersQuery();
+
   if (loading) {
     return <Loading />;
   }
+
   return (
     <Box flex="1">
       <Card>
@@ -27,12 +32,21 @@ const Users: React.FC = () => {
             <List>
               {data.getUsers.map((user) => {
                 return (
-                  <ListItem key={user._id}>
-                    <ListItemAvatar>
-                      <Avatar src={user.image}></Avatar>
-                    </ListItemAvatar>
-                    <ListItemText primary={user.name} />
-                  </ListItem>
+                  <Link
+                    key={user._id}
+                    href={{
+                      query: { userId: user._id },
+                    }}
+                  >
+                    <a>
+                      <ListItem>
+                        <ListItemAvatar>
+                          <Avatar src={user.image}></Avatar>
+                        </ListItemAvatar>
+                        <ListItemText color="t" primary={user.name} />
+                      </ListItem>
+                    </a>
+                  </Link>
                 );
               })}
             </List>

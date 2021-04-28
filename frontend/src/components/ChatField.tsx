@@ -1,14 +1,19 @@
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 import Box from "@material-ui/core/Box";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useCreateMessageMutation } from "../generated/graphql";
 
 const ChatField: React.FC = () => {
+  const { query } = useRouter();
   const [message, setMessage] = useState("");
+
+  const userId = typeof query.userId === "string" ? query.userId : null;
+
   const [createMessageMutation, { loading }] = useCreateMessageMutation({
     variables: {
-      to: "123",
+      to: userId,
       body: message,
     },
   });
