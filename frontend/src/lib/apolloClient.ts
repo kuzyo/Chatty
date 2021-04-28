@@ -1,17 +1,40 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { useMemo } from "react";
-import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
-import { BACKEND_URL } from "./config";
+import { ApolloClient, HttpLink, InMemoryCache, split } from "@apollo/client";
+import { getMainDefinition } from "@apollo/client/utilities";
+import { WebSocketLink } from "@apollo/client/link/ws";
+import { BACKEND_URL, WS_URL } from "./config";
 
 let apolloClient: any;
+
+const httpLink = new HttpLink({
+  uri: BACKEND_URL,
+  credentials: "include",
+});
+
+const wsLink = new WebSocketLink({
+  uri: WS_URL,
+  options: {
+    reconnect: true,
+  },
+});
+
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === "OperationDefinition" &&
+      definition.operation === "subscription"
+    );
+  },
+  wsLink,
+  httpLink
+);
 
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: new HttpLink({
-      uri: BACKEND_URL,
-      credentials: "include",
-    }),
+    link: splitLink,
     cache: new InMemoryCache(),
   });
 }
