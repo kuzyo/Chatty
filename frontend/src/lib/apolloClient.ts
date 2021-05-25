@@ -7,34 +7,43 @@ import { BACKEND_URL, WS_URL } from "./config";
 
 let apolloClient: any;
 
-const httpLink = new HttpLink({
-  uri: BACKEND_URL,
+interface Definintion {
+  kind: string;
+  operation?: string;
+}
+
+const wsLink = process.browser
+  ? new WebSocketLink({
+      // if you instantiate in the server, the error will be thrown
+      uri: `ws://localhost:4000/subscriptions`,
+      options: {
+        reconnect: true,
+      },
+    })
+  : null;
+
+const httplink = new HttpLink({
+  uri: "http://localhost:4000/graphql",
   credentials: "include",
 });
 
-const wsLink = new WebSocketLink({
-  uri: WS_URL,
-  options: {
-    reconnect: true,
-  },
-});
-
-const splitLink = split(
-  ({ query }) => {
-    const definition = getMainDefinition(query);
-    return (
-      definition.kind === "OperationDefinition" &&
-      definition.operation === "subscription"
-    );
-  },
-  wsLink,
-  httpLink
-);
+const link = process.browser
+  ? split(
+      //only create the split in the browser
+      // split based on operation type
+      ({ query }) => {
+        const { kind, operation }: Definintion = getMainDefinition(query);
+        return kind === "OperationDefinition" && operation === "subscription";
+      },
+      wsLink,
+      httplink
+    )
+  : httplink;
 
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: splitLink,
+    link,
     cache: new InMemoryCache(),
   });
 }

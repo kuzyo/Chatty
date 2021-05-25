@@ -1,13 +1,17 @@
+const http = require("http");
 import express from "express";
 import dotenv from "dotenv";
-import { ApolloServer } from "apollo-server-express";
-import { typeDefs, Query, Mutation } from "./graphql";
+import { ApolloServer, PubSub } from "apollo-server-express";
+import { typeDefs, Query, Mutation, Subscription } from "./graphql";
 import { setupPassport, setupDatabase, setupRoutes } from "./setup";
 
 dotenv.config();
 
+const pubsub = new PubSub();
+
 const mount = async () => {
   const app = express();
+  const httpServer = http.createServer(app);
   const database = await setupDatabase();
 
   setupPassport(app, database);
@@ -18,11 +22,16 @@ const mount = async () => {
     resolvers: {
       Query,
       Mutation,
+      Subscription,
+    },
+    subscriptions: {
+      path: "/subscriptions",
     },
     context: ({ req, res }) => ({
       req,
       res,
       database,
+      pubsub,
     }),
     playground: { settings: { "request.credentials": "same-origin" } },
   });
@@ -35,7 +44,13 @@ const mount = async () => {
     },
   });
 
-  app.listen({ port: process.env.PORT }, () => {
+  server.installSubscriptionHandlers(httpServer);
+
+  httpServer.listen({ port: process.env.PORT }, () => {
+    console.log(
+      `🚀 Subscription endpoint ready at ws://localhost:${process.env.PORT}${server.subscriptionsPath}`
+    );
+
     console.log(`🚀 Server ready at http://localhost:${process.env.PORT}`);
   });
 };
