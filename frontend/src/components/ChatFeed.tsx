@@ -50,6 +50,30 @@ const ChatFeed: React.FC = () => {
   const { loading, data } = useGetMessagesQuery();
   const { data: newData } = useMessageSentSubscription();
 
+  // const { error } = useMessageSentSubscription({
+  //   onSubscriptionData: ({ client, subscriptionData }) => {
+  //     console.log({ subscriptionData });
+  //     // Client is an instance of Apollo client.
+  //     // It has cache proxy method used in the `update` option in mutations.
+  //     // Please look at: https://www.apollographql.com/docs/react/essentials/mutations#update
+  //     const cachedMessages = client.readQuery({
+  //       query: GetMessagesDocument,
+  //     });
+  //     console.log({ cachedMessages });
+  //     const updatedData = cachedMessages.getMessages.concat(
+  //       subscriptionData.data.messageSent
+  //     );
+  //     console.log({ updatedData });
+  //     client.writeQuery({
+  //       query: GetMessagesDocument,
+  //       data: updatedData,
+  //     });
+  //   },
+  // });
+  // console.log({ loading });
+  // console.log({ data });
+  console.log({ newData });
+
   if (loading) {
     return <Loading />;
   }
