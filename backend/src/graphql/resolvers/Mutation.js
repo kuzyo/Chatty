@@ -8,6 +8,7 @@ const Mutation = {
         from: ctx.req.user.googleId,
       });
       const [message] = ops;
+      ctx.pubsub.publish("MESSAGE_CHANNEL", { messageSent: message });
       return message;
     } catch (error) {
       throw new Error(`Error: ${error}`);

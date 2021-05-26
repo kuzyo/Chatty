@@ -1,0 +1,9 @@
+subscription MessageSent {
+  messageSent {
+    _id
+    from
+    to
+    createdAt
+    body
+  }
+}

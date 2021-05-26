@@ -1,21 +1,27 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@material-ui/core/Box";
 import { Alert } from "@material-ui/lab";
 import { Loading } from "./Loading";
-import { useGetMessagesQuery } from "../generated/graphql";
+import {
+  useGetMessagesQuery,
+  GetMessagesDocument,
+  useMessageSentSubscription,
+} from "../generated/graphql";
 import { useUser } from "../providers/user";
 
-const ChatFeed: React.FC = () => {
-  const { data, loading } = useGetMessagesQuery();
-  const { user } = useUser();
+interface FeedProps {
+  user: any;
+  data: any;
+}
 
-  if (loading) {
-    return <Loading />;
-  }
-
+const Feed: React.FC<FeedProps> = ({ data, user }) => {
+  const [state, setState] = useState(data);
+  useEffect(() => {
+    setState(data);
+  }, [data]);
   return (
     <Box>
-      {data.getMessages.map((message) => {
+      {state.map((message) => {
         const isMineMessage = message.from === user._id;
         return (
           <Box
@@ -37,6 +43,25 @@ const ChatFeed: React.FC = () => {
       })}
     </Box>
   );
+};
+
+const ChatFeed: React.FC = () => {
+  const { user } = useUser();
+  const { loading, data } = useGetMessagesQuery();
+  const { data: newData } = useMessageSentSubscription();
+
+  if (loading) {
+    return <Loading />;
+  }
+  const getMessages = () => {
+    if (newData) {
+      return [...data.getMessages, newData.messageSent];
+    }
+    return data.getMessages;
+  };
+  const messages = getMessages();
+
+  return <Feed user={user} data={messages} />;
 };
 
 export default ChatFeed;
