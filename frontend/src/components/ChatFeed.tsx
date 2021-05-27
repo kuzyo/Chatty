@@ -1,27 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Box from "@material-ui/core/Box";
 import { Alert } from "@material-ui/lab";
 import { Loading } from "./Loading";
 import {
-  useGetMessagesQuery,
+  MessageSentDocument,
   GetMessagesDocument,
-  useMessageSentSubscription,
+  User,
+  Message,
 } from "../generated/graphql";
 import { useUser } from "../providers/user";
+import { useQuery } from "@apollo/client";
 
 interface FeedProps {
-  user: any;
-  data: any;
+  user: User;
+  data: Message[];
 }
 
 const Feed: React.FC<FeedProps> = ({ data, user }) => {
-  const [state, setState] = useState(data);
-  useEffect(() => {
-    setState(data);
-  }, [data]);
   return (
     <Box>
-      {state.map((message) => {
+      {data.map((message) => {
         const isMineMessage = message.from === user._id;
         return (
           <Box
@@ -47,45 +45,27 @@ const Feed: React.FC<FeedProps> = ({ data, user }) => {
 
 const ChatFeed: React.FC = () => {
   const { user } = useUser();
-  const { loading, data } = useGetMessagesQuery();
-  const { data: newData } = useMessageSentSubscription();
+  const { loading, data, subscribeToMore } = useQuery(GetMessagesDocument);
 
-  // const { error } = useMessageSentSubscription({
-  //   onSubscriptionData: ({ client, subscriptionData }) => {
-  //     console.log({ subscriptionData });
-  //     // Client is an instance of Apollo client.
-  //     // It has cache proxy method used in the `update` option in mutations.
-  //     // Please look at: https://www.apollographql.com/docs/react/essentials/mutations#update
-  //     const cachedMessages = client.readQuery({
-  //       query: GetMessagesDocument,
-  //     });
-  //     console.log({ cachedMessages });
-  //     const updatedData = cachedMessages.getMessages.concat(
-  //       subscriptionData.data.messageSent
-  //     );
-  //     console.log({ updatedData });
-  //     client.writeQuery({
-  //       query: GetMessagesDocument,
-  //       data: updatedData,
-  //     });
-  //   },
-  // });
-  // console.log({ loading });
-  // console.log({ data });
-  console.log({ newData });
+  useEffect(() => {
+    subscribeToMore({
+      document: MessageSentDocument,
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) return prev;
+        const newMessage = subscriptionData.data.messageSent;
+
+        return {
+          getMessages: [...prev.getMessages, newMessage],
+        };
+      },
+    });
+  }, []);
 
   if (loading) {
     return <Loading />;
   }
-  const getMessages = () => {
-    if (newData) {
-      return [...data.getMessages, newData.messageSent];
-    }
-    return data.getMessages;
-  };
-  const messages = getMessages();
 
-  return <Feed user={user} data={messages} />;
+  return <Feed user={user} data={data.getMessages} />;
 };
 
 export default ChatFeed;
